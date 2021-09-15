@@ -1,0 +1,9 @@
+*.py[co]
+*~
+.coverage
+.env
+.pytest_cache/
+.venv
+__pycache__
+config/**
+domain.cache

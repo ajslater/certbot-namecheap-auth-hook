@@ -1,0 +1,11 @@
+*.py[co]
+*~
+.coverage
+.env
+.pytest_cache/
+.venv
+Dockerfile
+__pycache__
+config/
+docker-compose.yaml
+domain.cache

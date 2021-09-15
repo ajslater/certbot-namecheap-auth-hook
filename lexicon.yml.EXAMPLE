@@ -1,0 +1,7 @@
+output: JSON
+log_level: DEBUG
+provider_name: namecheap
+namecheap:
+  auth_token: <API_TOKEN>
+  auth_username: <API_USERNAME>
+  auth_client_ip: <CLIENT_IP>
