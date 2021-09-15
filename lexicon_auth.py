@@ -18,7 +18,7 @@ from lexicon.client import Client
 from lexicon.config import ConfigResolver
 
 
-DOMAIN_CACHE_PATH = Path("domain.cache")
+DOMAIN_CACHE_PATH = Path("/tmp/domain.cache")
 DOMAIN_CACHE_BOUNCE_SECONDS = 180
 NAMECHEAP_MIN_TTL = 60
 WAIT_SECS = NAMECHEAP_MIN_TTL + 1
