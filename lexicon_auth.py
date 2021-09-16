@@ -22,7 +22,7 @@ DOMAIN_CACHE_PATH = Path("/tmp/domain.cache")
 DOMAIN_CACHE_BOUNCE_SECONDS = 180
 NAMECHEAP_MIN_TTL = 60
 WAIT_SECS = NAMECHEAP_MIN_TTL + 1
-CONFIG_PATH = Path(os.getenv("CONFIG_PATH", default="config/lexicon.yml"))
+CONFIG_PATH = Path(os.getenv("AUTH_HOOK_CONFIG_PATH", default="config/lexicon.yml"))
 
 
 def debounce_domains(domain):
