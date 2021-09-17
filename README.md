@@ -2,6 +2,12 @@
 
 [![CircleCI](https://circleci.com/gh/ajslater/certbot-namecheap-auth-hook/tree/main.svg?style=svg)](https://circleci.com/gh/ajslater/certbot-namecheap-auth-hook/tree/main)
 
+## Usage
+
+This is used as volume container mount from certbot. It is executed from the certbot container
+and does not have its own runtime. The auth script, auth.sh, jankily installs apk & python
+dependencies every time it's run.
+
 ## docker-compose.yaml
 
 ```yaml
