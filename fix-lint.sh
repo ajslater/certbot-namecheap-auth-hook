@@ -4,3 +4,6 @@ set -euxo pipefail
 poetry run isort .
 poetry run black .
 prettier --write .
+for f in $(ls -1 .*ignore); do 
+  sort --mmap --unique --output="$f" "$f"
+done
