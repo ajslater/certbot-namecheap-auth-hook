@@ -1,4 +1,6 @@
+*.EXAMPLE
 *.py[co]
+*lint.sh
 *~
 .coverage
 .env*
@@ -6,6 +8,7 @@
 .venv
 Dockerfile
 __pycache__
+build-multiarch.sh
 config/
 docker-compose.yaml
-domain.cache
+install-binfmt-platforms.sh
