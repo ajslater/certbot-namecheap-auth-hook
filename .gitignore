@@ -1,7 +1,7 @@
 *.py[co]
 *~
 .coverage
-.env
+.env.test
 .pytest_cache/
 .venv
 __pycache__

@@ -1,7 +1,7 @@
 services:
   certbot-namecheap-auth-hook:
     image: ajslater/certbot-namecheap-auth-hook
-    env_file: .env
+    env_file: .env.test
     build: .
     container_name: certbot-namecheap-auth-hook
     volumes:
