@@ -1,5 +1,7 @@
 # Certbot Namecheap DNS Auth Plugin
 
+[![CircleCI](https://circleci.com/gh/ajslater/certbot-namecheap-auth-hook/tree/main.svg?style=svg)](https://circleci.com/gh/ajslater/certbot-namecheap-auth-hook/tree/main)
+
 ## docker-compose.yaml
 
 ```yaml
