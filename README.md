@@ -33,6 +33,7 @@ services:
 ```
 
 ## .env Configuration
+
 Defaults shown
 
 ```sh
