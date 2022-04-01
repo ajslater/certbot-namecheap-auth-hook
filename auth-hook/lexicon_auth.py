@@ -13,7 +13,7 @@ import time
 
 from datetime import datetime
 from datetime import timezone
-from logging import INFO
+from logging import DEBUG
 from logging import basicConfig
 from logging import getLogger
 from pathlib import Path
@@ -28,7 +28,8 @@ NAMECHEAP_MIN_TTL = 60
 WAIT_SECS = NAMECHEAP_MIN_TTL + 1
 CONFIG_PATH = Path(os.getenv("AUTH_HOOK_CONFIG_PATH", default="config/lexicon.yml"))
 LOG_FMT = "%(asctime)s %(levelname)s:%(message)s"
-basicConfig(format=LOG_FMT, level=INFO)
+LOG_LEVEL = os.getenv("LOGLEVEL", DEBUG)
+basicConfig(format=LOG_FMT, level=LOG_LEVEL)
 LOG = getLogger(__name__)
 
 
@@ -71,6 +72,8 @@ def main():
         "name": certbot_domain,
         "content": certbot_validation,
     }
+    LOG.debug(f"{str(CONFIG_PATH)=}")
+    LOG.debug(action)
     config = ConfigResolver().with_config_file(str(CONFIG_PATH)).with_dict(action)
     Client(config).execute()
 
