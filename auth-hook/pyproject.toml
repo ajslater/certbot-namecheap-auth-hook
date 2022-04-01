@@ -10,7 +10,7 @@ main = "lexicon_auth:main"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-dns-lexicon = { extras = ["namecheap"], version = "^3.7" }
+dns-lexicon = { extras = ["namecheap"], version = "^3.9" }
 PySocks = "^1.7.1"
 
 [tool.poetry.dev-dependencies]
