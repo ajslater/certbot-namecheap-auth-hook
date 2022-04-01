@@ -10,6 +10,7 @@ fi
 # Would be nice to find a way for certbot parent container to 
 #   only run deps once
 . ./auth-hook-deps.sh
+echo "AUTH_HOOK_PROXY_DEST=$AUTH_HOOK_PROXY_DEST"
 if [ -n "$AUTH_HOOK_PROXY_DEST" ]; then
   . ./tempproxy.sh
 fi
