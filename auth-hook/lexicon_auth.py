@@ -72,8 +72,6 @@ def main():
         "name": certbot_domain,
         "content": certbot_validation,
     }
-    print(f"{str(CONFIG_PATH)=}")
-    print(action)
     config = ConfigResolver().with_config_file(str(CONFIG_PATH)).with_dict(action)
     Client(config).execute()
 
