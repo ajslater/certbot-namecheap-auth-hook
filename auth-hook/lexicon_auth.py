@@ -4,7 +4,7 @@ Certbot Auth plugin for Namecheap uses the DNS API.
 
 Usually certbot sets two environment variables:
 CERTBOT_DOMAIN & CERTBOT_VALIDATION
-But these can be overriden as when used in the flask server
+But these can be overridden as when used in the flask server
 """
 
 import os
@@ -62,7 +62,7 @@ def main():
         "name": certbot_domain,
         "content": certbot_validation,
     }
-    config = ConfigResolver().with_config_file(CONFIG_PATH).with_dict(action)
+    config = ConfigResolver().with_config_file(str(CONFIG_PATH)).with_dict(action)
     Client(config).execute()
 
     print(f"Waiting {WAIT_SECS}s for DNS to propagate...")

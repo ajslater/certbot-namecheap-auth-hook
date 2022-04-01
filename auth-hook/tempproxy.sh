@@ -1,10 +1,12 @@
 #!/bin/sh
-# Source this file to automatically setup and teardown an HTTP* proxy through cmetcalfe.ca
+# Source this file to automatically setup and teardown an HTTP* proxy
 # Use the PROXY_PORT and PROXY_DEST environment variables to customize the proxy
+set -x
 
 PROXY_PORT="${AUTH_HOOK_PROXY_PORT:-1080}"
 PROXY_DEST="${AUTH_HOOK_PROXY_DEST}"
-SSH_ID="${AUTH_HOOK_SSH_ID:-./config/id_ed25518}"
+DEFAULT_SSH_ID="./config/id_ed25518.tempproxy"
+SSH_ID="${AUTH_HOOK_SSH_ID:-$DEFAULT_SSH_ID}"
 SSH_PORT=${AUTH_HOOK_SSH_PORT:-22}
 PID="$$"
 

@@ -4,9 +4,9 @@
 
 ## Usage
 
-This is used as volume container mount from certbot. It is executed from the certbot container
-and does not have its own runtime. The auth script, auth.sh, jankily installs apk & python
-dependencies every time it's run.
+Certbot uses this as a volume container mount. The certbot container runs this code
+as this image does not have its own runtime. The auth script, auth.sh, jankily installs apk & python
+dependencies every time it's run on a new container.
 
 ## docker-compose.yaml
 
@@ -39,7 +39,7 @@ Defaults shown
 ```sh
 AUTH_HOOK_CONFIG_PATH=config/lexicon.yml #  Configures dns-lexicon
 
-# optional proxy config gets switched on if PROXY_DEST is set
+# optional proxy config gets switched on if you set PROXY_DEST
 AUTH_HOOK_PROXY_DEST=user@host.tld  # proxy ssh address
 AUTH_HOOK_PROXY_PORT=1080 # proxy port
 AUTH_HOOK_SSH_ID=config/id_ed25518 # proxy ssh private key
