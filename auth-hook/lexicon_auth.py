@@ -11,18 +11,16 @@ import os
 import sys
 import time
 
-from datetime import datetime
-from datetime import timezone
-from logging import DEBUG
-from logging import basicConfig
-from logging import getLogger
+from datetime import datetime, timezone
+from logging import DEBUG, basicConfig, getLogger
 from pathlib import Path
+from tempfile import gettempdir
 
 from lexicon.client import Client
 from lexicon.config import ConfigResolver
 
 
-DOMAIN_CACHE_PATH = Path("/tmp/domain.cache")
+DOMAIN_CACHE_PATH = Path(gettempdir()) / "lexicon_auth_domain.cache"
 DOMAIN_CACHE_BOUNCE_SECONDS = 180
 NAMECHEAP_MIN_TTL = 60
 WAIT_SECS = NAMECHEAP_MIN_TTL + 1
