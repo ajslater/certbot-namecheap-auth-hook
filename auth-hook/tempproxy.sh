@@ -4,7 +4,7 @@
 set -x
 
 PROXY_PORT="${AUTH_HOOK_PROXY_PORT:-1080}"
-PROXY_DEST="${AUTH_HOOK_PROXY_DEST}"
+PROXY_DEST="$AUTH_HOOK_PROXY_DEST"
 DEFAULT_SSH_ID="./config/id_ed25518.tempproxy"
 SSH_ID="${AUTH_HOOK_SSH_ID:-$DEFAULT_SSH_ID}"
 SSH_PORT=${AUTH_HOOK_SSH_PORT:-22}
@@ -14,7 +14,7 @@ PID="$$"
 trap 'ssh -i "${SSH_ID}" -p "${SSH_PORT}" -o StrictHostKeyChecking=no -q -S ".ctrl-socket-$PID" -O exit "$PROXY_DEST"' EXIT
 
 # Set up an SSH tunnel and wait for the port to be forwarded before continuing
-if ! ssh -i "${SSH_ID}" -p "${SSH_PORT}" -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes -M -S ".ctrl-socket-$PID" -f -N -D "$PROXY_PORT" "$PROXY_DEST"; then
+if ! ssh -i "$SSH_ID" -p "$SSH_PORT" -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes -M -S ".ctrl-socket-$PID" -f -N -D "$PROXY_PORT" "$PROXY_DEST"; then
     echo "Failed to open SSH tunnel, exiting"
     exit 1
 fi

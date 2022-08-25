@@ -14,15 +14,18 @@ dns-lexicon = { extras = ["namecheap"], version = "^3.9" }
 PySocks = "^1.7.1"
 
 [tool.poetry.dev-dependencies]
-black = "^22.3"
-flake8 = "^4.0.1"
+bandit = "^1.7.4"
+codespell = "^2.1.0"
+eradicate = "^2.1.0"
 flake8-black = "^0.3"
 flake8-bugbear = "^22.3"
 flake8-docstrings = "^1.5"
-pep8-naming = "^0.12"
-radon = "^5.1"
-isort = "^5.7"
+isort = "^5.10"
+# flake8-eradicate = "^1.2.1"
+pep8-naming = "^0.13"
 pyright = "^1.1.234"
+radon = "^5.1"
+vulture = "^2.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -33,14 +36,14 @@ exclude = "/(.git|__pycache__|.pytest_cache|.venv)/"
 
 [tool.pyright]
 exclude = [
- "**/__pycache__",
- ".git",
- ".mypy_cache",
- ".pytest_cache",
- ".venv",
- "config",
- "dist",
- "poetry.lock",
+  "**/__pycache__",
+  ".git",
+  ".mypy_cache",
+  ".pytest_cache",
+  ".venv",
+  "config",
+  "dist",
+  "poetry.lock",
 ]
 useLibraryCodeForTypes = true
 reportMissingImports = true
