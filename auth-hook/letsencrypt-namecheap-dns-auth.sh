@@ -61,14 +61,10 @@ set -x
 
 # -------- required arguments -------------------------
 
-# Your whitelisted IP address
-CLIENT_IP=${:-$AUTH_HOOK_CLIENT_IP}
-
-# Your user id
-NC_USER=${:-$AUTH_HOOK_NC_USER}
-
-# Your API key
-NC_API_KEY=${:-$AUTH_HOOK_NC_API_KEY}
+# Your whitelisted client IP address, namecheap user id & namecheap API key
+CLIENT_IP=$AUTH_HOOK_CLIENT_IP
+NC_USER=$AUTH_HOOK_NC_USER
+NC_API_KEY=$AUTH_HOOK_NC_API_KEY
 
 # ------- constants -----------------------------------
 
