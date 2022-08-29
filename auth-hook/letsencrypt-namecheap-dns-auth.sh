@@ -153,17 +153,17 @@ while [ "$FOUND" != "true" ] && [ "$(date +%s)" -lt "$END_SECONDS" ]; do
     fi
   fi
 
-  CURRENT_ACME_VALIDATION=$(host -t TXT "$TXT_DOMAIN"|grep "$CERTBOT_DOMAIN"|cut -d ' ' -f 4|sed 's/\"//g')
+  CURRENT_ACME_VALIDATION=$(host -t TXT "$TXT_DOMAIN"|grep "^$CERTBOT_DOMAIN"|cut -d ' ' -f 4|sed 's/"//g')
   if [ "$CERTBOT_VALIDATION" = "$CURRENT_ACME_VALIDATION" ]; then
-  FOUND=true
-    echo "Found!"
+    FOUND=true
+    echo "Certbot validation matches dns txt record :)"
   else
-    echo "Not yet found."
+    echo "dns record not doesn't match."
   fi
 done
 
-if [ "$(date +%s)" -lt "$END_SECONDS" ]; then
-  echo "Validation check timed out"
+if [ "$(date +%s)" -gt "$END_SECONDS" ]; then
+  echo "Validation check timed out!"
 fi
 
 # cleanup
