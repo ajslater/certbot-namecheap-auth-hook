@@ -3,6 +3,10 @@
 # Use the PROXY_PORT and PROXY_DEST environment variables to customize the proxy
 set -x
 
+if [ ! -x "$(which ssh)" ]; then
+  apk add --no-cache openssh
+fi
+
 PROXY_PORT="${AUTH_HOOK_PROXY_PORT:-1080}"
 PROXY_DEST="$AUTH_HOOK_PROXY_DEST"
 SSH_ID="$AUTH_HOOK_SSH_ID"
@@ -13,7 +17,7 @@ PID="$$"
 trap 'ssh -i "${SSH_ID}" -p "${SSH_PORT}" -o StrictHostKeyChecking=no -q -S ".ctrl-socket-$PID" -O exit "$PROXY_DEST"' EXIT
 
 # Set up an SSH tunnel and wait for the port to be forwarded before continuing
-if ! ssh -i "$SSH_ID" -p "$SSH_PORT" -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes -M -S ".ctrl-socket-$PID" -f -N -D "$PROXY_PORT" "$PROXY_DEST"; then
+if ! ssh -i "$SSH_ID" -p "$SSH_PORT" -4 -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes -M -S ".ctrl-socket-$PID" -f -N -D "$PROXY_PORT" "$PROXY_DEST"; then
     echo "Failed to open SSH tunnel, exiting"
     exit 1
 fi
