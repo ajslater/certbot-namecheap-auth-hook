@@ -88,7 +88,11 @@ SLD=$(echo "$CERTBOT_DOMAIN" | rev | cut -d. -f2 | rev)
 API_COMMAND="namecheap.domains.dns.getHosts&SLD=${SLD}&TLD=${TLD}"
 TMP_GET_HOSTS_PATH=$TMP_DIR/getHosts.xml
 
-wget -O /tmp/getHosts.xml "${NC_SERVICE_URL}?ClientIp=${CLIENT_IP}&ApiUser=${NC_USER}&ApiKey=${NC_API_KEY}&UserName=${NC_USER}&Command=${API_COMMAND}"
+wget -O $TMP_GET_HOSTS_PATH "${NC_SERVICE_URL}?ClientIp=${CLIENT_IP}&ApiUser=${NC_USER}&ApiKey=${NC_API_KEY}&UserName=${NC_USER}&Command=${API_COMMAND}"
+
+# Use temp file instead of non-posix 'here string'
+TMP_GET_HOSTS_ONLY_PATH=$TMP_DIR/getHostsOnly.xml
+grep "<host " $TMP_GET_HOSTS_PATH > $TMP_GET_HOSTS_ONLY_PATH
 
 API_COMMAND="namecheap.domains.dns.setHosts&SLD=${SLD}&TLD=${TLD}"
 ENTRY_NUM=1
@@ -114,7 +118,7 @@ while IFS= read -r line; do
     # shellcheck disable=SC2004
     ENTRY_NUM=$((${ENTRY_NUM} + 1)) 
   fi
-done <<< "$(grep "<host " "$TMP_GET_HOSTS_PATH")"
+done < "$TMP_GET_HOSTS_ONLY_PATH"
 
 # OK, now let's add our new acme challenge verification record
 TMP_TEST_API_PATH=$TMP_DIR/testapi.out
