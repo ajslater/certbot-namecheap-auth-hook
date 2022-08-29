@@ -1,10 +1,8 @@
 #!/bin/sh
 set -x
-. ./auth-hook/config/test-env
-export CERTBOT_DOMAIN=bullfrog.sl8r.net
-export CERTBOT_VALIDATION=test-script-test-value
+. ./.env.test
 if [ "$AUTH_HOOK_PROXY_DEST" != "" ]; then
-  . auth-hook/tempproxy.sh
+    . auth-hook/tempproxy.sh
 fi
 cd auth-hook || exit 1
 ./letsencrypt-namecheap-dsn-auth.sh
