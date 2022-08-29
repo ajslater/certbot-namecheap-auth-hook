@@ -18,7 +18,7 @@ CTRL_SOCKET="/tmp/ssh-ctrl-socket-$PID"
 trap 'ssh -i "$SSH_ID" -p "$SSH_PORT" -4 -o StrictHostKeyChecking=no -q -S $CTRL_SOCKET -O exit "$PROXY_DEST"' EXIT
 
 # Set up an SSH tunnel and wait for the port to be forwarded before continuing
-if ! ssh -i "$SSH_ID" -p "$SSH_PORT" -4 -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes -M -S $CTRL_SOCKET -f -N -D "$PROXY_PORT" "$PROXY_DEST"; then
+if ! ssh -i "$SSH_ID" -p "$SSH_PORT" -4 -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes -M -S "$CTRL_SOCKET" -f -N -D "$PROXY_PORT" "$PROXY_DEST"; then
     echo "Failed to open SSH tunnel, exiting"
     exit 1
 fi
