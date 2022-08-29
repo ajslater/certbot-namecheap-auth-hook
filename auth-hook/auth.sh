@@ -12,4 +12,4 @@ echo "AUTH_HOOK_PROXY_DEST=$AUTH_HOOK_PROXY_DEST"
 if [ "$AUTH_HOOK_PROXY_DEST" != "" ]; then
   . ./tempproxy.sh
 fi
-./letsencrypt-namecheap-dsn-auth.sh
+./letsencrypt-namecheap-dns-auth.sh
