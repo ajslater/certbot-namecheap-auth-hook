@@ -5,8 +5,12 @@
 ## Usage
 
 Certbot uses this as a volume container mount. The certbot container runs this code
-as this image does not have its own runtime. The auth script, auth.sh, jankily installs apk & python
-dependencies every time it's run on a new container.
+as this image does not have its own runtime.
+
+### Hacks
+
+The optionally invoked `tempproxy.sh` script installs openssh for alpine if it's
+not on the path. That will happen the first time you run a new container.
 
 ## docker-compose.yaml
 
@@ -37,11 +41,14 @@ services:
 Defaults shown
 
 ```sh
-AUTH_HOOK_CONFIG_PATH=config/lexicon.yml #  Configures dns-lexicon
+# Required
+# AUTH_HOOK_CLIENT_IP=my.whitelisted.client.ip
+# AUTH_HOOK_NC_USER=MyNameCheapUserName
+# AUTH_HOOK_NC_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-# optional proxy config gets switched on if you set PROXY_DEST
-AUTH_HOOK_PROXY_DEST=user@host.tld  # proxy ssh address
-AUTH_HOOK_PROXY_PORT=1080 # proxy port
-AUTH_HOOK_SSH_ID=config/id_ed25518 # proxy ssh private key
-AUTH_HOOK_SSH_PORT=22 # proxy ssh port
+# Optional ssh http proxy config gets switched on if AUTH_HOOK_PROXY_DEST is set
+# AUTH_HOOK_PROXY_DEST=user@host.tld
+# AUTH_HOOK_PROXY_PORT=1080
+# AUTH_HOOK_SSH_ID=config/id_ed25518
+# AUTH_HOOK_SSH_PORT=22
 ```
