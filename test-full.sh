@@ -7,4 +7,4 @@ if [ "$AUTH_HOOK_PROXY_DEST" != "" ]; then
   . auth-hook/tempproxy.sh
 fi
 cd auth-hook || exit 1
-poetry run ./lexicon_auth.py
+./letsencrypt-namecheap-dsn-auth.sh
