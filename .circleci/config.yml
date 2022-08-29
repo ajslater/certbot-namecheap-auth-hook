@@ -44,6 +44,5 @@ workflows:
           filters:
             branches:
               only:
-                - master
                 - main
   version: 2.1
