@@ -74,6 +74,7 @@ NC_SERVICE_URL="https://api.namecheap.com/xml.response"
 
 # Wait time between checks for dns record propagation
 WAIT_SECONDS=10
+MAX_WAIT=360
 
 # tmp dir for caching data
 TMP_DIR=/tmp/namecheap-dns-auth
@@ -88,11 +89,11 @@ SLD=$(echo "$CERTBOT_DOMAIN" | rev | cut -d. -f2 | rev)
 API_COMMAND="namecheap.domains.dns.getHosts&SLD=${SLD}&TLD=${TLD}"
 TMP_GET_HOSTS_PATH=$TMP_DIR/getHosts.xml
 
-wget -O $TMP_GET_HOSTS_PATH "${NC_SERVICE_URL}?ClientIp=${CLIENT_IP}&ApiUser=${NC_USER}&ApiKey=${NC_API_KEY}&UserName=${NC_USER}&Command=${API_COMMAND}"
+wget -O "$TMP_GET_HOSTS_PATH" "${NC_SERVICE_URL}?ClientIp=${CLIENT_IP}&ApiUser=${NC_USER}&ApiKey=${NC_API_KEY}&UserName=${NC_USER}&Command=${API_COMMAND}"
 
 # Use temp file instead of non-posix 'here string'
 TMP_GET_HOSTS_ONLY_PATH=$TMP_DIR/getHostsOnly.xml
-grep "<host " $TMP_GET_HOSTS_PATH > $TMP_GET_HOSTS_ONLY_PATH
+grep "<host " "$TMP_GET_HOSTS_PATH" > "$TMP_GET_HOSTS_ONLY_PATH"
 
 API_COMMAND="namecheap.domains.dns.setHosts&SLD=${SLD}&TLD=${TLD}"
 ENTRY_NUM=1
@@ -131,8 +132,14 @@ wget -O "$TMP_TEST_API_PATH" "${NC_SERVICE_URL}?ClientIp=${CLIENT_IP}&ApiUser=${
 # Because we "echo" output here, certbot thinks something might have gone wrong.  It doesn't effect
 # the successful completion of the domain cert renewal.  I like to see the output.  You might rather like to
 # see certbot think everything went perfect and comment out the "echo" lines below.
+if [ ! -x "$(which host)" ]; then
+  apk add --no-cache bind-tools
+fi
+TXT_DOMAIN="_acme-challenge.${CERTBOT_DOMAIN}"
 FOUND=false
-while [ "$FOUND" != "true" ]; do
+ # shellcheck disable=SC2004
+END_SECONDS=$(($(date +%s) + ${MAX_WAIT}))
+while [ "$FOUND" != "true" ] && [ "$(date +%s)" -lt "$END_SECONDS" ]; do
   echo "Sleeping for ${WAIT_SECONDS} seconds..."
   sleep "$WAIT_SECONDS"
   if [ "$FLUSH_DNS_CACHE" = "true" ]; then
@@ -146,7 +153,7 @@ while [ "$FOUND" != "true" ]; do
     fi
   fi
 
-  CURRENT_ACME_VALIDATION=$(dig -t TXT _acme-challenge."$CERTBOT_DOMAIN"|grep "^_acme-challenge.${CERTBOT_DOMAIN}."|cut -d\" -f 2)
+  CURRENT_ACME_VALIDATION=$(host -t TXT "$TXT_DOMAIN"|grep "$CERTBOT_DOMAIN"|cut -d ' ' -f 4|sed 's/\"//g')
   if [ "$CERTBOT_VALIDATION" = "$CURRENT_ACME_VALIDATION" ]; then
   FOUND=true
     echo "Found!"
@@ -154,6 +161,10 @@ while [ "$FOUND" != "true" ]; do
     echo "Not yet found."
   fi
 done
+
+if [ "$(date +%s)" -lt "$END_SECONDS" ]; then
+  echo "Validation check timed out"
+fi
 
 # cleanup
 # comment out these lines if you want to see some output from our commands, above
