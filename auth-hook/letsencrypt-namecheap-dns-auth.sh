@@ -77,7 +77,7 @@ MAX_WAIT=360
 TMP_DIR=/tmp/namecheap-dns-auth
 
 # Code begins
-if [ -n "$http_proxy" ] || [ -n "$https_proxy" ]; then
+if [ "$http_proxy" != "" ] || [ "$https_proxy" != "" ]; then
   echo "http_proxy=$http_proxy"
   echo "https_proxy=$https_proxy"
 fi
