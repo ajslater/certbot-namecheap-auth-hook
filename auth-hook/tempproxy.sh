@@ -24,5 +24,5 @@ if ! ssh -i "$SSH_ID" -p "$SSH_PORT" -4 -o StrictHostKeyChecking=no -o ExitOnFor
 fi
 
 # Set environment variables to redirect HTTP* traffic through the proxy
-export HTTP_PROXY="socks5://127.0.0.1:$PROXY_PORT"
-export HTTPS_PROXY="$HTTP_PROXY"
+export http_proxy="socks5://127.0.0.1:$PROXY_PORT"
+export https_proxy="$http_proxy"

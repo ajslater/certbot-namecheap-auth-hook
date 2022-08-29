@@ -60,15 +60,12 @@ set -x
 # CERTBOT_ALL_DOMAINS: A comma-separated list of all domains challenged for the current
 
 # -------- required arguments -------------------------
-
 # Your whitelisted client IP address, namecheap user id & namecheap API key
 CLIENT_IP=$AUTH_HOOK_CLIENT_IP
 NC_USER=$AUTH_HOOK_NC_USER
 NC_API_KEY=$AUTH_HOOK_NC_API_KEY
 
 # ------- constants -----------------------------------
-
-
 # Namecheap API url
 NC_SERVICE_URL="https://api.namecheap.com/xml.response"
 
@@ -79,8 +76,16 @@ MAX_WAIT=360
 # tmp dir for caching data
 TMP_DIR=/tmp/namecheap-dns-auth
 
-
 # Code begins
+if [ -n "$http_proxy" ] || [ -n "$https_proxy" ]; then
+  echo "http_proxy=$http_proxy"
+  echo "https_proxy=$https_proxy"
+fi
+
+if [ ! -x "$(which curl)" ]; then
+  apk --no-cache add curl
+fi
+
 mkdir -p "$TMP_DIR"
 
 # current dns records
@@ -89,7 +94,7 @@ SLD=$(echo "$CERTBOT_DOMAIN" | rev | cut -d. -f2 | rev)
 API_COMMAND="namecheap.domains.dns.getHosts&SLD=${SLD}&TLD=${TLD}"
 TMP_GET_HOSTS_PATH=$TMP_DIR/getHosts.xml
 
-wget -O "$TMP_GET_HOSTS_PATH" "${NC_SERVICE_URL}?ClientIp=${CLIENT_IP}&ApiUser=${NC_USER}&ApiKey=${NC_API_KEY}&UserName=${NC_USER}&Command=${API_COMMAND}"
+curl -o "$TMP_GET_HOSTS_PATH" "${NC_SERVICE_URL}?ClientIp=${CLIENT_IP}&ApiUser=${NC_USER}&ApiKey=${NC_API_KEY}&UserName=${NC_USER}&Command=${API_COMMAND}"
 
 # Use temp file instead of non-posix 'here string'
 TMP_GET_HOSTS_ONLY_PATH=$TMP_DIR/getHostsOnly.xml
@@ -126,7 +131,7 @@ TMP_TEST_API_PATH=$TMP_DIR/testapi.out
 API_COMMAND="${API_COMMAND}&HostName${ENTRY_NUM}=_acme-challenge&RecordType${ENTRY_NUM}=TXT&Address${ENTRY_NUM}=${CERTBOT_VALIDATION}"
 
 # Finally, we'll update all host DNS records
-wget -O "$TMP_TEST_API_PATH" "${NC_SERVICE_URL}?ClientIp=${CLIENT_IP}&ApiUser=${NC_USER}&ApiKey=${NC_API_KEY}&UserName=${NC_USER}&Command=${API_COMMAND}"
+curl -o "$TMP_TEST_API_PATH" "${NC_SERVICE_URL}?ClientIp=${CLIENT_IP}&ApiUser=${NC_USER}&ApiKey=${NC_API_KEY}&UserName=${NC_USER}&Command=${API_COMMAND}"
 
 # Actually, FINALLY, we need to wait for our records to propagate before letting certbot continue.
 # Because we "echo" output here, certbot thinks something might have gone wrong.  It doesn't effect
