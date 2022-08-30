@@ -70,13 +70,14 @@ NC_API_KEY=$AUTH_HOOK_NC_API_KEY
 NC_SERVICE_URL="https://api.namecheap.com/xml.response"
 
 # Wait time between checks for dns record propagation
-WAIT_SECONDS=10
+WAIT_SECONDS=15
 MAX_WAIT=360
 
 # tmp dir for caching data
 TMP_DIR=/tmp/namecheap-dns-auth
 
 # Code begins
+# shellcheck disable=SC2154
 if [ "$http_proxy" != "" ] || [ "$https_proxy" != "" ]; then
   echo "http_proxy=$http_proxy"
   echo "https_proxy=$https_proxy"
@@ -91,18 +92,27 @@ mkdir -p "$TMP_DIR"
 # current dns records
 TLD=$(echo "$CERTBOT_DOMAIN" | rev | cut -d. -f1 | rev)
 SLD=$(echo "$CERTBOT_DOMAIN" | rev | cut -d. -f2 | rev)
-API_COMMAND="namecheap.domains.dns.getHosts&SLD=${SLD}&TLD=${TLD}"
 TMP_GET_HOSTS_PATH=$TMP_DIR/getHosts.xml
-
-curl -o "$TMP_GET_HOSTS_PATH" "${NC_SERVICE_URL}?ClientIp=${CLIENT_IP}&ApiUser=${NC_USER}&ApiKey=${NC_API_KEY}&UserName=${NC_USER}&Command=${API_COMMAND}"
+AUTH_PARAMS="ClientIp=${CLIENT_IP}&ApiUser=${NC_USER}&ApiKey=${NC_API_KEY}&UserName=${NC_USER}"
+API_COMMAND_DOMAIN_PARAMS="SLD=${SLD}&TLD=${TLD}"
+API_COMMAND="Command=namecheap.domains.dns.getHosts&$API_COMMAND_DOMAIN_PARAMS"
+POST_DATA="${AUTH_PARAMS}&${API_COMMAND}"
+curl -o "$TMP_GET_HOSTS_PATH" --data "$POST_DATA" "$NC_SERVICE_URL"
 
 # Use temp file instead of non-posix 'here string'
 TMP_GET_HOSTS_ONLY_PATH=$TMP_DIR/getHostsOnly.xml
 grep "<host " "$TMP_GET_HOSTS_PATH" > "$TMP_GET_HOSTS_ONLY_PATH"
 
-API_COMMAND="namecheap.domains.dns.setHosts&SLD=${SLD}&TLD=${TLD}"
-ENTRY_NUM=1
+# include domain tails before the 2nd level domain in the challenge host.
+DOMAIN_TAIL=$(echo "$CERTBOT_DOMAIN" | awk 'NF{NF-=2}1' FS='.' OFS='.')
+if [ "$DOMAIN_TAIL" != "" ];then
+  DOMAIN_TAIL=.$DOMAIN_TAIL
+fi
+CHALLENGE_HOST_NAME=_acme-challenge$DOMAIN_TAIL
+API_COMMAND="Command=namecheap.domains.dns.setHosts&$API_COMMAND_DOMAIN_PARAMS"
+POST_DATA="${AUTH_PARAMS}&${API_COMMAND}"
 
+ENTRY_NUM=1
 while IFS= read -r line; do
   NAME=$(echo "$line"|sed 's/^.* Name="\([^"]*\)".*$/\1/g')
   TYPE=$(echo "$line"|sed 's/^.* Type="\([^"]*\)".*$/\1/g')
@@ -115,23 +125,20 @@ while IFS= read -r line; do
   # so we are specifying auto here
   TTL=1799
 
-  if [ "$NAME" = "_acme-challenge" ]; then
-    # skip all existing _acme-challenge entries
-    true
-  else
-    API_COMMAND="${API_COMMAND}&HostName${ENTRY_NUM}=${NAME}&RecordType${ENTRY_NUM}=${TYPE}&Address${ENTRY_NUM}=${ADDRESS}&MXPref${ENTRY_NUM}=${MX_PREF}&TTL${ENTRY_NUM}=${TTL}"
+  if [ "$NAME" != "$CHALLENGE_HOST_NAME" ]; then
+    # skip the _acme-challenge entry as we recreate it next.
+    POST_DATA="$POST_DATA&HostName${ENTRY_NUM}=${NAME}&RecordType${ENTRY_NUM}=${TYPE}&Address${ENTRY_NUM}=${ADDRESS}&MXPref${ENTRY_NUM}=${MX_PREF}&TTL${ENTRY_NUM}=${TTL}"
     # sc is wrong about how to do arithmetic here SC2004
     # shellcheck disable=SC2004
-    ENTRY_NUM=$((${ENTRY_NUM} + 1)) 
+    ENTRY_NUM=$((${ENTRY_NUM} + 1))
   fi
 done < "$TMP_GET_HOSTS_ONLY_PATH"
 
 # OK, now let's add our new acme challenge verification record
-TMP_TEST_API_PATH=$TMP_DIR/testapi.out
-API_COMMAND="${API_COMMAND}&HostName${ENTRY_NUM}=_acme-challenge&RecordType${ENTRY_NUM}=TXT&Address${ENTRY_NUM}=${CERTBOT_VALIDATION}"
-
+POST_DATA="$POST_DATA&HostName${ENTRY_NUM}=${CHALLENGE_HOST_NAME}&RecordType${ENTRY_NUM}=TXT&Address${ENTRY_NUM}=${CERTBOT_VALIDATION}&TTL${ENTRY_NUM}=60"
+TMP_UPDATE_RESPONSE_PATH=$TMP_DIR/updateResponse.xml
 # Finally, we'll update all host DNS records
-curl -o "$TMP_TEST_API_PATH" "${NC_SERVICE_URL}?ClientIp=${CLIENT_IP}&ApiUser=${NC_USER}&ApiKey=${NC_API_KEY}&UserName=${NC_USER}&Command=${API_COMMAND}"
+curl -o "$TMP_UPDATE_RESPONSE_PATH" --data-raw "$POST_DATA" "$NC_SERVICE_URL"
 
 # Actually, FINALLY, we need to wait for our records to propagate before letting certbot continue.
 # Because we "echo" output here, certbot thinks something might have gone wrong.  It doesn't effect
@@ -147,18 +154,7 @@ END_SECONDS=$(($(date +%s) + ${MAX_WAIT}))
 while [ "$FOUND" != "true" ] && [ "$(date +%s)" -lt "$END_SECONDS" ]; do
   echo "Sleeping for ${WAIT_SECONDS} seconds..."
   sleep "$WAIT_SECONDS"
-  if [ "$FLUSH_DNS_CACHE" = "true" ]; then
-    if [ -x "$(which resolvctl)" ]; then
-      resolvectl flush-caches
-    elif [ -x "$(which systemd-resolve)" ]; then
-      systemd-resolve --flush-caches
-    elif [ -x "$(which rndc)" ]; then 
-      rndc flush
-      rndc reload
-    fi
-  fi
-
-  CURRENT_ACME_VALIDATION=$(host -t TXT "$TXT_DOMAIN"|grep "^$CERTBOT_DOMAIN"|cut -d ' ' -f 4|sed 's/"//g')
+  CURRENT_ACME_VALIDATION=$(host -t TXT "$TXT_DOMAIN"|grep "^$TXT_DOMAIN"|cut -d ' ' -f 4|sed 's/"//g')
   if [ "$CERTBOT_VALIDATION" = "$CURRENT_ACME_VALIDATION" ]; then
     FOUND=true
     echo "Certbot validation matches dns txt record :)"
@@ -173,4 +169,4 @@ fi
 
 # cleanup
 # comment out these lines if you want to see some output from our commands, above
-rm -rf "$TMP_DIR"
+# rm -rf "$TMP_DIR"
