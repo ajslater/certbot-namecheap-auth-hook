@@ -9,8 +9,11 @@ as this image does not have its own runtime.
 
 ### Hacks
 
-The optionally invoked `tempproxy.sh` script installs openssh for alpine if it's
-not on the path. That will happen the first time you run a new container.
+The main auth script relies on `curl` and `host` to work. The first time the
+auth script runs it will install these for alpine in the certbot container.
+
+The optionally invoked proxy facility will install `ssh` for alpine in the certbot
+container.
 
 ## docker-compose.yaml
 

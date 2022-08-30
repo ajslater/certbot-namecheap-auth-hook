@@ -3,5 +3,5 @@ set -x
 . .env.test
 . auth-hook/tempproxy.sh
 cd auth-hook || exit 1
-echo "$HTTPS_PROXY"
+echo "$https_proxy"
 curl "https://ipv4.icanhazip.com"
