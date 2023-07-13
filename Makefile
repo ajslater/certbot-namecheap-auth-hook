@@ -8,6 +8,7 @@ install:
 ## Install linting tools
 ## @category Install
 install-lint:
+	bin/install-lint-deps.sh
 	npm install
 
 .PHONY: build
