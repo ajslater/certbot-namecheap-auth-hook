@@ -1,8 +1,18 @@
 services:
   certbot-namecheap-auth-hook:
     image: ajslater/certbot-namecheap-auth-hook
-    env_file: .env.test
-    build: .
+    env_file: .env
+    build:
+      args:
+        VERSION: $VERSION
+      dockerfile: Dockerfile
+      x-bake:
+        platforms:
+          - linux/amd64
+          - linux/arm64
+        tags:
+          - $REPO:$VERSION
+          - $REPO:latest
     container_name: certbot-namecheap-auth-hook
     volumes:
       - ./config:/auth-hook/config:ro

@@ -4,21 +4,22 @@
 set -x
 
 if [ ! -x "$(which ssh)" ]; then
-  apk add --no-cache openssh
+    apk add --no-cache openssh
 fi
 
 PROXY_PORT="${AUTH_HOOK_PROXY_PORT:-1080}"
 PROXY_DEST="$AUTH_HOOK_PROXY_DEST"
-SSH_ID="$AUTH_HOOK_SSH_ID"
+# ssh seems to treat relative paths differently.
+SSH_ID=$(realpath "$AUTH_HOOK_SSH_ID")
 SSH_PORT=${AUTH_HOOK_SSH_PORT:-22}
-PID="$$"
-CTRL_SOCKET="/tmp/ssh-ctrl-socket-$PID"
+SSH_CONFIG=$(realpath auth-hook/ssh_config)
+SSH_CMD="ssh -F $SSH_CONFIG -i $SSH_ID -p $SSH_PORT"
 
 # Teardown the SSH connection when the script exits
-trap 'ssh -i "$SSH_ID" -p "$SSH_PORT" -4 -o StrictHostKeyChecking=no -q -S $CTRL_SOCKET -O exit "$PROXY_DEST"' EXIT
+trap '$SSH_CMD -q -O exit "$PROXY_DEST"' EXIT
 
 # Set up an SSH tunnel and wait for the port to be forwarded before continuing
-if ! ssh -i "$SSH_ID" -p "$SSH_PORT" -4 -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes -M -S "$CTRL_SOCKET" -f -N -D "$PROXY_PORT" "$PROXY_DEST"; then
+if ! "$SSH_CMD" -D "$PROXY_PORT" "$PROXY_DEST"; then
     echo "Failed to open SSH tunnel, exiting"
     exit 1
 fi

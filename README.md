@@ -4,16 +4,16 @@
 
 ## Usage
 
-Certbot uses this as a volume container mount. The certbot container runs this code
-as this image does not have its own runtime.
+Certbot uses this as a volume container mount. The certbot container runs this
+code as this image does not have its own runtime.
 
 ### Hacks
 
 The main auth script relies on `curl` and `host` to work. The first time the
 auth script runs it will install these for alpine in the certbot container.
 
-The optionally invoked proxy facility will install `ssh` for alpine in the certbot
-container.
+The optionally invoked proxy facility will install `ssh` for alpine in the
+certbot container.
 
 ## docker-compose.yaml
 
