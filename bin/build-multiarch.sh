@@ -1,4 +1,5 @@
 #!/bin/bash
+# Build docker image for all platforms
 set -xeuo pipefail
 source .env
 export DOCKER_CLI_EXPERIMENTAL=enabled

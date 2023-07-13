@@ -1,4 +1,5 @@
 #!/bin/sh
+# Test the proxy is functioning
 set -x
 . .env.test
 . auth-hook/tempproxy.sh

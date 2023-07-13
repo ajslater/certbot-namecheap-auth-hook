@@ -10,6 +10,7 @@ if [ "$CERTBOT_DOMAIN" = "" ] || [ "$CERTBOT_VALIDATION" = "" ]; then
 fi
 echo "AUTH_HOOK_PROXY_DEST=$AUTH_HOOK_PROXY_DEST"
 if [ "$AUTH_HOOK_PROXY_DEST" != "" ]; then
+  # shellcheck source=./auth-hook/tempproxy.sh
   . ./tempproxy.sh
 fi
 ./letsencrypt-namecheap-dns-auth.sh

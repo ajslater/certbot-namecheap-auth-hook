@@ -1,4 +1,5 @@
 #!/bin/sh
+# Test the full auth hook works optionally with the proxy
 set -x
 . ./.env.test
 if [ "$AUTH_HOOK_PROXY_DEST" != "" ]; then

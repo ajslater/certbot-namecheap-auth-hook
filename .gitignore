@@ -2,8 +2,10 @@
 *~
 .coverage
 .env.test
+.eslintcache
 .pytest_cache/
 .venv
 __pycache__
 auth-hook/config
 domain.cache
+node_modules
