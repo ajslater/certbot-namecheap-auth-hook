@@ -6,8 +6,8 @@ export DOCKER_CLI_EXPERIMENTAL=enabled
 export DOCKER_BUILDKIT=1
 docker buildx create --use
 
+DOCKER_CMD=("docker" "buildx" "bake")
 if [ "${1:-}" == "push" ]; then
-    BAKE_ARGS="--push"
+    DOCKER_CMD=("${DOCKER_CMD[@]}" "--push")
 fi
-# shellcheck disable=SC2086
-docker buildx bake ${BAKE_ARGS:-}
+"${DOCKER_CMD[@]}"
