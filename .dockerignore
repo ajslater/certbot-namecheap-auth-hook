@@ -16,8 +16,8 @@ MANIFEST
 NEWS
 TODO.md
 __pycache__
+bin
 docker-compose*
 monkeytype.sqlite3
 node_modules
 test-results
-version.sh
