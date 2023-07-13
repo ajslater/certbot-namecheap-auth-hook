@@ -13,13 +13,13 @@ PROXY_DEST="$AUTH_HOOK_PROXY_DEST"
 SSH_ID=$(realpath "$AUTH_HOOK_SSH_ID")
 SSH_PORT=${AUTH_HOOK_SSH_PORT:-22}
 SSH_CONFIG=$(realpath auth-hook/ssh_config)
-SSH_CMD=("ssh" "-F" "$SSH_CONFIG" "-i" "$SSH_ID" "-p" "$SSH_PORT")
+SSH_CMD="ssh -F $SSH_CONFIG -i $SSH_ID -p $SSH_PORT"
 
 # Teardown the SSH connection when the script exits
-trap '"${SSH_CMD[@]}" -q -O exit "$PROXY_DEST"' EXIT
+trap '$SSH_CMD -q -O exit "$PROXY_DEST"' EXIT
 
 # Set up an SSH tunnel and wait for the port to be forwarded before continuing
-if ! "${SSH_CMD[@]}" -D "$PROXY_PORT" "$PROXY_DEST"; then
+if ! "$SSH_CMD" -D "$PROXY_PORT" "$PROXY_DEST"; then
     echo "Failed to open SSH tunnel, exiting"
     exit 1
 fi
