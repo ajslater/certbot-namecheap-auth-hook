@@ -15,13 +15,13 @@ install-lint:
 ## Build docker image
 ## @category Build
 build:
-	bin/build-multiarch.sh
+	bin/docker-bake.sh
 
 .PHONY: deploy
 ## Build and deploy docker image
 ## @category Deploy
 deploy:
-	bin/build-multiarch.sh push
+	bin/docker-bake.sh push
 
 .PHONY: update
 ## Update dependencies
