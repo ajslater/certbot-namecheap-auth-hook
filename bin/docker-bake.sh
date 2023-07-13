@@ -10,4 +10,4 @@ if [ "${1:-}" == "push" ]; then
     BAKE_ARGS="--push"
 fi
 # shellcheck disable=SC2086
-docker buildx bake ${BAKE_ARGS:-}
+docker buildx bake "${BAKE_ARGS:-}"
