@@ -16,6 +16,7 @@ MANIFEST
 NEWS
 TODO.md
 __pycache__
+auth-hook/config
 bin
 docker-compose*
 monkeytype.sqlite3
