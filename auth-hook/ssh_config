@@ -1,0 +1,10 @@
+Host *
+    AddressFamily inet
+    Compression yes
+    ControlMaster auto
+    ControlPath /tmp/ssh-auth-hook-proxy-%C.sock
+    ControlPersist yes
+    ExitOnForwardFailure yes
+    ServerAliveInterval 100
+    StrictHostKeyChecking no
+    TCPKeepAlive yes
