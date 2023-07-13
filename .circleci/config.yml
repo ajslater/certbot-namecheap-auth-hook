@@ -10,6 +10,9 @@ jobs:
     steps:
       - checkout
       - run:
+          command: apt-get install -y codespell
+          name: Install codespell
+      - run:
           command: make install-lint
           name: Install linters
       - run:
@@ -25,6 +28,9 @@ jobs:
     executor: latest-machine
     steps:
       - checkout
+      - run:
+          command: apt-get install -y codespell
+          name: Install codespell
       - run:
           command: make install-lint
           name: Install linters
