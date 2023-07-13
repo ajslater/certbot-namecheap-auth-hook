@@ -10,25 +10,35 @@ jobs:
     steps:
       - checkout
       - run:
-          command: ./install-binfmt-platforms.sh
+          command: make install-lint
+          name: Install linters
+      - run:
+          command: make lint
+          name: Lint code
+      - run:
+          command: make install
           name: Install binfmt Platforms
       - run:
-          command: ./build-multiarch.sh
+          command: make build
           name: Build
   deploy:
-    environment:
-      PUSH: "--push"
     executor: latest-machine
     steps:
       - checkout
       - run:
+          command: make install-lint
+          name: Install linters
+      - run:
+          command: make lint
+          name: Lint code
+      - run:
           command: docker login --username="$DOCKER_USER" --password="$DOCKER_PASS"
           name: Login to Docker Hub
       - run:
-          command: ./install-binfmt-platforms.sh
+          command: make install
           name: Install binfmt Platforms
       - run:
-          command: ./build-multiarch.sh
+          command: make deploy
           name: Build & Push
 version: 2.1
 workflows:

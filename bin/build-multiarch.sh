@@ -4,7 +4,9 @@ set -xeuo pipefail
 source .env
 export DOCKER_CLI_EXPERIMENTAL=enabled
 export DOCKER_BUILDKIT=1
-
+if [ "$1" == "push" ]; then
+    PUSH="--push"
+fi
 docker buildx create --use
 # shellcheck disable=SC2086
 docker buildx build \

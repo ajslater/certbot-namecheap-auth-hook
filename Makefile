@@ -1,15 +1,26 @@
 .PHONY: install
-## Install for production
+## Install buildx platforms
 ## @category Install
 install: 
 	bin/install-binfmt-platforms.sh
+
+.PHONY: install-lint
+## Install linting tools
+## @category Install
+install-lint:
 	npm install
 
 .PHONY: build
 ## Build docker image
 ## @category Build
-build: 
+build:
 	bin/build-multiarch.sh
+
+.PHONY: deploy
+## Build and deploy docker image
+## @category Deploy
+deploy:
+	bin/build-multiarch.sh push
 
 .PHONY: update
 ## Update dependencies
