@@ -8,6 +8,6 @@ docker buildx create --use
 
 DOCKER_CMD=("docker" "buildx" "bake")
 if [ "${1:-}" == "push" ]; then
-    DOCKER_CMD=("${DOCKER_CMD[@]}" "--push")
+  DOCKER_CMD=("${DOCKER_CMD[@]}" "--push")
 fi
 "${DOCKER_CMD[@]}"
