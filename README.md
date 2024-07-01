@@ -43,15 +43,17 @@ services:
 
 Defaults shown
 
+<!-- eslint-skip -->
+
 ```sh
 # Required
-# AUTH_HOOK_CLIENT_IP=my.whitelisted.client.ip
-# AUTH_HOOK_NC_USER=MyNameCheapUserName
-# AUTH_HOOK_NC_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+AUTH_HOOK_CLIENT_IP=my.whitelisted.client.ip
+AUTH_HOOK_NC_USER=MyNameCheapUserName
+AUTH_HOOK_NC_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # Optional ssh http proxy config gets switched on if AUTH_HOOK_PROXY_DEST is set
-# AUTH_HOOK_PROXY_DEST=user@host.tld
-# AUTH_HOOK_PROXY_PORT=1080
-# AUTH_HOOK_SSH_ID=config/id_ed25518
-# AUTH_HOOK_SSH_PORT=22
+AUTH_HOOK_PROXY_DEST=user@host.tld
+AUTH_HOOK_PROXY_PORT=1080
+AUTH_HOOK_SSH_ID=config/id_ed25518
+AUTH_HOOK_SSH_PORT=22
 ```

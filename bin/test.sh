@@ -3,7 +3,7 @@
 set -x
 . ./.env.test
 if [ "$AUTH_HOOK_PROXY_DEST" != "" ]; then
-    . auth-hook/tempproxy.sh
+  . auth-hook/tempproxy.sh
 fi
 cd auth-hook || exit 1
 export AUTH_HOOK_CLIENT_IP
