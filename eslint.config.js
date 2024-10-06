@@ -139,7 +139,7 @@ export default [
   },
   {
     files: [
-      "**/certbot.yaml",
+      "**/certbot*.yaml",
       "**/docker-compose*.yaml",
       "**/.*_treestamps.yaml",
     ],
