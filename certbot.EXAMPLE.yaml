@@ -1,0 +1,26 @@
+name: certbot
+volumes:
+  certbot-auth-hook:
+
+services:
+  certbot-namecheap-auth-hook:
+    image: ajslater/certbot-namecheap-auth-hook
+    container_name: certbot-namecheap-auth-hook
+    volumes:
+      - certbot-auth-hook:/auth-hook
+      - ${MOUNT_POINT}/certbot-auth-hook/config:/auth-hook/config:ro
+  certbot:
+    image: certbot/certbot:arm64v8-latest
+    container_name: certbot
+    env_file:
+      - .env
+      - .env.certbot-auth-hook
+    volumes:
+      - certbot-auth-hook:/auth-hook
+      - ${MOUNT_POINT}/certbot-auth-hook/config:/auth-hook/config:ro
+      - ${MOUNT_POINT}/certbot/letsencrypt:/etc/letsencrypt
+      - ${MOUNT_POINT}/certbot/logs:/var/log/letsencrypt
+      - ${MOUNT_POINT}/certbot/deploy-hook.sh:/app/deploy-hook.sh
+    security_opt:
+      - no-new-privileges:true
+    command: renew --deploy-hook 'sh /app/deploy-hook.sh'

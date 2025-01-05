@@ -6,13 +6,13 @@ set -x
 if [ ! -x "$(which ssh)" ]; then
   apk add --no-cache openssh
 fi
-
+SCRIPT_DIR="$(dirname "$0")"
 PROXY_PORT="${AUTH_HOOK_PROXY_PORT:-1080}"
 PROXY_DEST="$AUTH_HOOK_PROXY_DEST"
 # ssh seems to treat relative paths differently.
 SSH_ID=$(realpath "$AUTH_HOOK_SSH_ID")
 SSH_PORT=${AUTH_HOOK_SSH_PORT:-22}
-SSH_CONFIG=$(realpath auth-hook/ssh_config)
+SSH_CONFIG=$(realpath "$SCRIPT_DIR"/auth-hook/ssh_config)
 SSH_CMD="ssh -F $SSH_CONFIG -i $SSH_ID -p $SSH_PORT"
 
 # Teardown the SSH connection when the script exits
