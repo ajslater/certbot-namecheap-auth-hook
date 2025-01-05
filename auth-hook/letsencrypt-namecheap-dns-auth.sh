@@ -98,9 +98,11 @@ POST_DATA="${AUTH_PARAMS}&${API_COMMAND}"
 ENTRY_NUM=1
 while IFS= read -r line; do
   # Parse xml with sed :/
+  # Another better maintained namecheap parser:
+  # https://github.com/acmesh-official/acme.sh/blob/master/dnsapi/dns_namecheap.sh
   NAME=$(echo "$line" | sed 's/^.* Name="\([^"]*\)".*$/\1/g')
   TYPE=$(echo "$line" | sed 's/^.* Type="\([^"]*\)".*$/\1/g')
-  ADDRESS=$(echo "$line" | sed 's/^.* Address="\([^"]*\)".*$/\1/g')
+  ADDRESS=$(echo "$line" | sed 's/^.* Address="\([^"]*\)".*$/\1/g' | sed 's/&quot;/"/g')
   MX_PREF=$(echo "$line" | sed 's/^.* MXPref="\([^"]*\)".*$/\1/g')
   TTL=$(echo "$line" | sed 's/^.* TTL="\([^"]*\)".*$/\1/g')
 
