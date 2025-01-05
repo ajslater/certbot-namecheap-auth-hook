@@ -15,4 +15,6 @@ npm run fix
 ###################
 ###### Shell ######
 ###################
-shellharden --replace ./**/*.sh
+# shellharden --replace ./**/*.sh
+# shellharden quotes too much in tempproxy.sh
+shellharden --replace auth-hook/auth.sh auth-hook/letsencrypt-namecheap-dns-auth.sh

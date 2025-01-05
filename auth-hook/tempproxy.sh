@@ -4,7 +4,7 @@
 set -x
 
 if [ ! -x "$(which ssh)" ]; then
-    apk add --no-cache openssh
+  apk add --no-cache openssh
 fi
 SCRIPT_DIR="$(dirname "$0")"
 PROXY_PORT="${AUTH_HOOK_PROXY_PORT:-1080}"
@@ -23,8 +23,8 @@ trap '$SSH_END' EXIT
 # Set up an SSH tunnel and wait for the port to be forwarded before continuing
 # XXX SSH_START cannot be in quotes XXX
 if ! $SSH_START; then
-    echo "Failed to open SSH tunnel, exiting"
-    exit 1
+  echo "Failed to open SSH tunnel, exiting"
+  exit 1
 fi
 
 # Set environment variables to redirect HTTP* traffic through the proxy
