@@ -1,11 +1,11 @@
-*.py[co]
-*~
+__pycache__
 .coverage
 .env.test
 .eslintcache
 .pytest_cache/
 .venv
-__pycache__
+*.py[co]
+*~
 auth-hook/config
 domain.cache
 node_modules

@@ -22,7 +22,7 @@ trap '$SSH_END' EXIT
 
 # Set up an SSH tunnel and wait for the port to be forwarded before continuing
 # XXX SSH_START cannot be in quotes XXX
-if ! $SSH_START; then
+if ! "$SSH_START"; then
   echo "Failed to open SSH tunnel, exiting"
   exit 1
 fi
